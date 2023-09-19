@@ -1,46 +1,43 @@
-import React, { useEffect, useState } from 'react'
-import {useForm} from "react-hook-form"
-import { apiConnector } from '../../services/apiconnector';
-import { contactusEndpoint } from '../../services/apis';
-import CountryCode from "../../data/countrycode.json"
+import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { apiConnector } from "../../services/apiconnector";
+import { contactusEndpoint } from "../../services/apis";
+import CountryCode from "../../data/countrycode.json";
 
 const ContactUsForm = () => {
+  const [loading, setLoading] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitSuccessful },
+  } = useForm();
 
-    const [loading, setLoading] = useState(false);
-    const {
-        register,
-        handleSubmit,
-        reset,
-        formState: {errors, isSubmitSuccessful}
-    } = useForm();
-
-    const submitContactForm = async(data) => {
-        console.log("Logging Data" , data);
-        try{
-            setLoading(true);
-            // const response = await apiConnector("POST", contactusEndpoint.CONTACT_US_API, data);
-            const response = {status:"OK"};
-            console.log("Logging response", response);
-            setLoading(false);
-        }
-        catch(error) {
-            console.log("Error:" , error.message);
-            setLoading(false);
-        }
+  const submitContactForm = async (data) => {
+    console.log("Logging Data", data);
+    try {
+      setLoading(true);
+      // const response = await apiConnector("POST", contactusEndpoint.CONTACT_US_API, data);
+      const response = { status: "OK" };
+      console.log("Logging response", response);
+      setLoading(false);
+    } catch (error) {
+      console.log("Error:", error.message);
+      setLoading(false);
     }
+  };
 
-    useEffect( () => {
-        if(isSubmitSuccessful) {
-            reset({
-                email:"",
-                firstname:"",
-                lastname:"",
-                message:"",
-                phoneNo:"",
-            })
-        }
-    },[reset, isSubmitSuccessful] );
-
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      reset({
+        email: "",
+        firstname: "",
+        lastname: "",
+        message: "",
+        phoneNo: "",
+      });
+    }
+  }, [reset, isSubmitSuccessful]);
 
   return (
     <form onSubmit={handleSubmit(submitContactForm)}>
@@ -98,13 +95,13 @@ const ContactUsForm = () => {
             <select
               name="dropdown"
               id="dropdown"
-              className="bg-yellow-50 w-[80px] rounded-[0.5rem]"
+              className="bg-slate-600 w-[80px] rounded-[0.5rem]"
               {...register("countrycode", { required: true })}
             >
               {CountryCode.map((element, index) => {
                 return (
                   <option key={index} value={element.code}>
-                    {element.code} -{element.country}
+                    {element.code} - {element.country}
                   </option>
                 );
               })}
@@ -150,6 +147,6 @@ const ContactUsForm = () => {
       </div>
     </form>
   );
-}
+};
 
-export default ContactUsForm
+export default ContactUsForm;

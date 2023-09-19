@@ -1,17 +1,41 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import college from "../../../data/college.json";
 
 import { sendOtp } from "../../../services/operations/authAPI";
 import { setSignupData } from "../../../slices/authSlice";
 // import { ACCOUNT_TYPE } from "../../../utils/constants"
-import Tab from "../../common/Tab";
+// import Tab from "../../common/Tab";
+import { useForm } from "react-hook-form";
 
 function SignupForm() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const {
+    // register,
+    // handleSubmit,
+    reset,
+    formState: { /* errors,  */isSubmitSuccessful },
+  } = useForm();
+
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      reset({
+        collegeId: "",
+        collegeName: "",
+        stateName: "",
+        cityName: "",
+        facultyName: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+      });
+    }
+  }, [reset, isSubmitSuccessful]);
 
   // student or instructor
   // const [accountType, setAccountType] = useState(ACCOUNT_TYPE.STUDENT)
@@ -32,7 +56,6 @@ function SignupForm() {
 
   const {
     collegeId,
-    collegeName,
     stateName,
     cityName,
     facultyName,
@@ -120,22 +143,29 @@ function SignupForm() {
             className="w-full rounded-[0.5rem] bg-richblack-800 p-[12px] text-richblack-5"
           />
         </label>
+
         <label>
           <p className="mb-1 text-[0.875rem] leading-[1.375rem] text-richblack-5">
-            College Name <sup className="text-pink-200">*</sup>
+            College Name<sup className="text-pink-200">*</sup>
           </p>
-          <input
-            required
-            type="text"
+          <select
             name="collegeName"
-            value={collegeName}
+            id="collegeName"
+            className="bg-richblack-800 p-[12px] w-full rounded-[0.5rem] text-richblack-5"
+            // {...register("collegeName", { required: true })}
             onChange={handleOnChange}
-            placeholder="Enter College name"
-            style={{
-              boxShadow: "inset 0px -1px 0px rgba(255, 255, 255, 0.18)",
-            }}
-            className="w-full rounded-[0.5rem] bg-richblack-800 p-[12px] text-richblack-5"
-          />
+          >
+            <option disabled selected>
+              Select Your college
+            </option>
+            {college.map((element, index) => {
+              return (
+                <option key={index} value={element.name}>
+                  {element.name}
+                </option>
+              );
+            })}
+          </select>
         </label>
 
         <div className="flex gap-x-4">
